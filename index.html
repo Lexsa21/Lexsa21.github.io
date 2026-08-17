@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Axel Estrada — Desarrollador Full Stack</title>
+<meta name="description" content="Portfolio de Axel Estrada. Estudiante de Ingeniería en Sistemas en UADE. Proyectos en React, Java, JavaScript y Python.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400&family=Inter:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script>
+  /* Marca la intro antes del primer pintado para que no haya parpadeo.
+     El setTimeout es la red de seguridad: si el JS principal falla,
+     la página se muestra igual a los 3 segundos. */
+  try{
+    if (!matchMedia('(prefers-reduced-motion:reduce)').matches){
+      document.documentElement.classList.add('intro');
+      setTimeout(function(){ document.documentElement.classList.remove('intro'); }, 3000);
+    }
+  }catch(e){}
+</script>
+
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --bg:#F0F0EE;
+  --fg:#121212;
+  --dim:#6E6E6E;
+  --line:rgba(0,0,0,.16);
+  --veil:rgba(0,0,0,.03);
+  --glow:rgba(0,0,0,.07);
+  --lum:0,0,0;
+
+  --display:"Inter Tight", system-ui, sans-serif;
+  --body:"Inter", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, monospace;
+
+  --banda:clamp(92px, 13vh, 150px);   /* alto de la banda del título */
+  --borde:20px;                        /* separación del recuadro al borde */
+  --gutter:clamp(1.75rem, 4vw, 4rem);  /* aire interior del recuadro */
+  --rail:clamp(180px, 18vw, 260px);
+}
+[data-theme="dark"]{
+  --bg:#0A0A0A;
+  --fg:#EDEDED;
+  --dim:#8A8A8A;
+  --line:rgba(255,255,255,.14);
+  --veil:rgba(255,255,255,.04);
+  --glow:rgba(255,255,255,.10);
+  --lum:255,255,255;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--body);
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  transition:background .5s ease, color .5s ease;
+}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:1px solid var(--fg);outline-offset:6px}
+
+/* ============================================================
+   ATMÓSFERA
+   ============================================================ */
+.atmos{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;contain:strict}
+.atmos>*{position:absolute}
+.glow{inset:-40%;will-change:transform;transform:translateZ(0)}
+.glow-a{
+  background:radial-gradient(closest-side at 70% 28%,
+    rgba(var(--lum),.10) 0%,  rgba(var(--lum),.088) 14%,
+    rgba(var(--lum),.068) 28%, rgba(var(--lum),.046) 42%,
+    rgba(var(--lum),.028) 56%, rgba(var(--lum),.014) 70%,
+    rgba(var(--lum),.005) 84%, rgba(var(--lum),0) 100%);
+  animation:driftA 38s ease-in-out infinite alternate;
+}
+.glow-b{
+  background:radial-gradient(closest-side at 86% 74%,
+    rgba(var(--lum),.09) 0%,  rgba(var(--lum),.078) 14%,
+    rgba(var(--lum),.060) 28%, rgba(var(--lum),.040) 42%,
+    rgba(var(--lum),.024) 56%, rgba(var(--lum),.012) 70%,
+    rgba(var(--lum),.004) 84%, rgba(var(--lum),0) 100%);
+  animation:driftB 27s ease-in-out infinite alternate;
+}
+.glow-c{
+  background:radial-gradient(closest-side at 32% 56%,
+    rgba(var(--lum),.045) 0%, rgba(var(--lum),.036) 20%,
+    rgba(var(--lum),.024) 40%, rgba(var(--lum),.013) 60%,
+    rgba(var(--lum),.005) 80%, rgba(var(--lum),0) 100%);
+  animation:driftC 52s linear infinite;
+}
+@keyframes driftA{from{transform:translate3d(-3%,2%,0)}to{transform:translate3d(7%,-6%,0)}}
+@keyframes driftB{from{transform:translate3d(5%,-4%,0)}to{transform:translate3d(-8%,7%,0)}}
+@keyframes driftC{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.glow-cursor{
+  left:0;top:0;width:64vw;height:64vw;margin:-32vw 0 0 -32vw;
+  background:radial-gradient(closest-side at center,
+    rgba(var(--lum),.075) 0%,  rgba(var(--lum),.064) 10%,
+    rgba(var(--lum),.050) 20%, rgba(var(--lum),.037) 31%,
+    rgba(var(--lum),.026) 42%, rgba(var(--lum),.017) 53%,
+    rgba(var(--lum),.010) 64%, rgba(var(--lum),.005) 75%,
+    rgba(var(--lum),.002) 86%, rgba(var(--lum),0) 100%);
+  opacity:0;transition:opacity 1.2s ease;
+  will-change:transform;transform:translateZ(0);
+}
+.glow-cursor.live{opacity:1}
+
+.lens{
+  left:0;top:0;width:560px;height:560px;margin:-280px 0 0 -280px;
+  border-radius:50%;overflow:hidden;
+  opacity:0;transition:opacity 1s ease;
+  will-change:transform;transform:translateZ(0);
+  box-shadow:inset 0 0 0 1px rgba(var(--lum),.05), inset 0 0 40px rgba(var(--lum),.02);
+}
+.lens.live{opacity:1}
+.lens-grid{
+  position:absolute;left:0;top:0;width:100vw;height:100vh;
+  opacity:.5;transition:opacity .55s ease;will-change:transform;
+  background-image:
+    repeating-linear-gradient(to right,  rgba(var(--lum),.075) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(to bottom, rgba(var(--lum),.075) 0 1px, transparent 1px 48px);
+}
+.lens.hot .lens-grid{opacity:1}
+
+.grain{
+  top:-50%;left:-50%;width:200%;height:200%;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1.2s steps(1,end) infinite;will-change:transform;transform:translateZ(0);
+}
+@keyframes grain{
+  0%,100%{transform:translate3d(0,0,0)}10%{transform:translate3d(-2%,-3%,0)}
+  20%{transform:translate3d(-4%,2%,0)}30%{transform:translate3d(2%,-4%,0)}
+  40%{transform:translate3d(-1%,3%,0)}50%{transform:translate3d(-3%,1%,0)}
+  60%{transform:translate3d(3%,2%,0)}70%{transform:translate3d(-4%,-1%,0)}
+  80%{transform:translate3d(1%,4%,0)}90%{transform:translate3d(-2%,-2%,0)}
+}
+
+/* ============================================================
+   INTRO — el nombre viaja del centro a la banda
+   ============================================================ */
+html.intro,html.intro body{overflow:hidden!important}
+html.intro .sheet,
+html.intro .cota,
+html.intro .cajetin,
+html.intro .theme,
+html.intro .shell{opacity:0!important}
+html.intro .banda p{opacity:0!important;transform:translateY(10px)}
+
+.sheet,.cota,.theme,.shell{transition:opacity .85s ease .15s}
+/* el subtítulo entra recién cuando el nombre ya recuperó su tamaño real
+   (1,18s), si no aparecería en la posición que el nombre gigante le impone */
+.banda p{
+  transition:opacity .7s ease 1.2s,
+             transform .9s cubic-bezier(.22,1,.36,1) 1.2s;
+}
+.banda h1{
+  transform-origin:center center;will-change:transform;
+  white-space:nowrap;
+  text-rendering:geometricPrecision;
+  -webkit-font-smoothing:antialiased;
+  backface-visibility:hidden;
+}
+
+/* ============================================================
+   BANDA DEL TÍTULO — afuera del recuadro, como la tapa de un libro
+   ============================================================ */
+.banda{
+  position:fixed;z-index:5;
+  top:0;left:var(--borde);right:var(--borde);height:var(--banda);
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+  pointer-events:none;
+}
+.banda h1{
+  font-family:var(--display);font-weight:300;
+  font-size:clamp(2rem,5.4vw,4.4rem);
+  line-height:.95;letter-spacing:-.02em;
+  margin:0;text-transform:uppercase;
+}
+.banda p{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--dim);
+  margin:.5rem .15rem 0 0;
+}
+
+/* ============================================================
+   RECUADRO DEL PLANO — arranca debajo de la banda
+   ============================================================ */
+.sheet{
+  position:fixed;z-index:4;pointer-events:none;
+  top:var(--banda);left:var(--borde);right:var(--borde);bottom:var(--borde);
+  border:1px solid var(--line);
+}
+.sheet i{position:absolute;background:var(--fg);opacity:.55}
+.sheet i.c{width:9px;height:1px}
+.sheet i.v{width:1px;height:9px}
+.sheet i:nth-child(1),.sheet i:nth-child(2){top:-1px;left:-1px}
+.sheet i:nth-child(3),.sheet i:nth-child(4){top:-1px;right:-1px}
+.sheet i:nth-child(5),.sheet i:nth-child(6){bottom:-1px;left:-1px}
+.sheet i:nth-child(7),.sheet i:nth-child(8){bottom:-1px;right:-1px}
+
+/* cotas */
+.cota{
+  position:fixed;z-index:4;pointer-events:none;
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;color:var(--dim);
+}
+.cota::before,.cota::after{content:"";position:absolute;background:var(--line)}
+.cota-x{
+  top:calc(var(--banda) + 16px);
+  left:calc(var(--borde) + 44px);right:calc(var(--borde) + 44px);
+  height:1px;background:var(--line);
+}
+.cota-x::before{left:0;top:-4px;width:1px;height:9px}
+.cota-x::after{right:0;top:-4px;width:1px;height:9px}
+.cota-x span{position:absolute;left:50%;top:-.95rem;transform:translateX(-50%);background:var(--bg);padding:0 .6rem}
+.cota-y{
+  top:calc(var(--banda) + 46px);bottom:calc(var(--borde) + 46px);
+  left:calc(var(--borde) + 16px);width:1px;background:var(--line);
+}
+.cota-y::before{top:0;left:-4px;width:9px;height:1px}
+.cota-y::after{bottom:0;left:-4px;width:9px;height:1px}
+.cota-y span{
+  position:absolute;top:50%;left:-.95rem;
+  transform:translateY(-50%) rotate(-90deg);transform-origin:center;
+  background:var(--bg);padding:0 .6rem;white-space:nowrap;
+}
+
+/* cajetín — SOLO en el inicio */
+.cajetin{
+  position:fixed;z-index:4;pointer-events:none;
+  right:calc(var(--borde) + 18px);bottom:calc(var(--borde) + 18px);
+  border:1px solid var(--line);background:var(--bg);
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;color:var(--dim);
+  min-width:230px;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .18s ease, transform .18s ease;
+}
+.cajetin.on{opacity:1;transform:none}
+.cajetin div{display:flex;justify-content:space-between;gap:1.5rem;padding:.42rem .65rem}
+.cajetin div+div{border-top:1px solid var(--line)}
+.cajetin b{font-weight:400;color:var(--fg)}
+.cajetin .head{letter-spacing:.16em}
+.cajetin .head b{font-size:.62rem}
+
+/* conmutador de tema */
+.theme{
+  position:fixed;z-index:6;
+  left:calc(var(--borde) + 14px);bottom:calc(var(--borde) + 16px);
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  display:flex;gap:1rem;align-items:center;
+  background:none;border:0;padding:0;cursor:pointer;
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;color:var(--dim);
+}
+.theme span{transition:color .3s}
+.theme .is-on{color:var(--fg)}
+
+/* ============================================================
+   ESTRUCTURA INTERIOR
+   ============================================================ */
+.shell{
+  position:relative;z-index:1;
+  padding:calc(var(--banda) + var(--gutter)) calc(var(--borde) + var(--gutter))
+          calc(var(--borde) + var(--gutter));
+  display:grid;grid-template-columns:var(--rail) 1fr;
+  gap:var(--gutter);
+}
+.rail{
+  position:sticky;top:calc(var(--banda) + var(--gutter));
+  align-self:start;height:fit-content;
+}
+.rail nav{display:flex;flex-direction:column;gap:.7rem}
+.rail nav a{font-size:.78rem;font-weight:700;width:fit-content;color:var(--dim);transition:color .3s}
+.rail nav a:hover,.rail nav a.on{color:var(--fg)}
+.rail nav a.on::before{content:"● ";font-size:.6em;vertical-align:middle}
+.rail .meta{
+  margin-top:clamp(3rem,28vh,20rem);
+  font-family:var(--mono);font-size:.68rem;color:var(--dim);line-height:1.9;
+}
+.main{min-width:0}
+
+/* cada sección es una lámina: llena la hoja y el scroll se engancha en ella */
+html{scroll-snap-type:y mandatory;scroll-padding-top:calc(var(--banda) + var(--gutter))}
+section{
+  position:relative;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  /* desde donde arranca la sección (banda + aire) hasta el fondo de la pantalla */
+  min-height:calc(100vh - var(--banda) - var(--gutter));
+}
+
+.rotulo-sec{
+  font-family:var(--mono);font-size:clamp(.72rem,.9vw,.84rem);
+  letter-spacing:.24em;font-weight:400;
+  text-transform:uppercase;
+  color:color-mix(in srgb, var(--fg) 62%, transparent);
+  margin:0 0 clamp(1rem,2.5vh,1.8rem);
+}
+
+/* ============================================================
+   INICIO — la lámina casi vacía
+   ============================================================ */
+
+
+/* pista de continuidad: avisa que hay otra lámina abajo */
+.pista{
+  position:absolute;bottom:clamp(1rem,3vh,2.5rem);
+  /* la sección vive en la columna derecha: descontamos el riel para caer
+     en el centro real de la pantalla, no en el de la columna */
+  left:calc(50vw - (var(--borde) + var(--gutter)*2 + var(--rail)));
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.6rem;
+  color:var(--fg);opacity:0;pointer-events:none;
+  transition:opacity .45s ease;
+  z-index:2;
+}
+section.activa .pista{opacity:.42;pointer-events:auto}
+section.activa .pista:hover{opacity:.95}
+.pista svg{display:block;overflow:visible}
+.pista .cuerpo{stroke:currentColor;fill:none;stroke-width:1.1}
+.pista .rueda{fill:currentColor;animation:rodar 2.6s ease-in-out infinite}
+.pista .chevron{
+  stroke:currentColor;fill:none;stroke-width:1.1;
+  stroke-linecap:round;stroke-linejoin:round;
+  animation:respira 2.6s ease-in-out infinite;
+}
+@keyframes rodar{
+  0%,100%{transform:translateY(0);opacity:1}
+  45%    {transform:translateY(7px);opacity:.15}
+  46%    {transform:translateY(0);opacity:0}
+  70%    {transform:translateY(0);opacity:1}
+}
+@keyframes respira{
+  0%,100%{transform:translateY(0);opacity:.5}
+  50%    {transform:translateY(4px);opacity:1}
+}
+
+/* ============================================================
+   PROYECTOS — descripción a la izquierda, carrusel a la derecha
+   ============================================================ */
+#proyectos{padding:clamp(3rem,11vh,8rem) 0 clamp(.5rem,1.5vh,1.25rem)}
+.obra{
+  display:grid;grid-template-columns:1fr 1.15fr;
+  gap:clamp(1.5rem,4vw,4rem);align-items:center;
+}
+
+/* --- panel de descripción --- */
+.desc{position:relative;height:min(40vh,330px)}
+.ficha{
+  position:absolute;left:0;right:0;top:0;
+  opacity:0;pointer-events:none;
+  transform:translateY(10px);
+  transition:opacity .5s ease, transform .6s cubic-bezier(.22,1,.36,1);
+}
+.ficha .cuerpo{display:block}
+.ficha.on{opacity:1;pointer-events:auto;transform:none}
+.ficha .num{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;
+  color:var(--dim);display:block;margin:0 0 .8rem;
+}
+.ficha h3{
+  font-family:var(--display);font-weight:300;
+  font-size:clamp(1.1rem,2.1vw,1.6rem);letter-spacing:-.01em;
+  margin:0 0 .95rem;
+}
+.ficha p{margin:0 0 1.2rem;max-width:40ch;font-size:.88rem}
+.ficha .tags{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1.4rem;padding:0;list-style:none}
+.ficha .tags li{
+  font-family:var(--mono);font-size:.62rem;color:var(--dim);
+  border:1px solid var(--line);padding:.2rem .55rem;
+}
+.ficha .links{display:flex;gap:1.25rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em}
+.ficha .links a{border-bottom:1px solid var(--line);padding-bottom:2px;transition:border-color .3s,color .3s}
+.ficha .links a:hover{border-color:var(--fg);color:var(--fg)}
+
+/* --- carrusel --- */
+.carro{position:relative}
+.flecha{
+  position:absolute;left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:.7rem;color:var(--dim);
+  pointer-events:none;opacity:.5;
+}
+.flecha-up{top:-1.4rem}
+.flecha-dn{bottom:-1.4rem}
+
+.work{
+  position:relative;
+  height:min(40vh,330px);
+  overflow-y:auto;overflow-x:hidden;
+  scroll-behavior:smooth;
+  overscroll-behavior:auto;
+  scrollbar-width:none;-ms-overflow-style:none;
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 18%, #000 82%, transparent 100%);
+  mask-image:linear-gradient(to bottom, transparent 0, #000 18%, #000 82%, transparent 100%);
+}
+.work::-webkit-scrollbar{display:none}
+
+.entry{
+  display:block;width:100%;text-align:right;
+  padding:.8rem 0;
+  transform-origin:100% 50%;
+  will-change:transform,opacity;
+}
+.entry .title{
+  font-family:var(--display);font-weight:200;
+  font-size:clamp(1.6rem,4.4vw,3.4rem);
+  line-height:1.03;letter-spacing:-.01em;display:inline-block;
+  transition:transform .45s cubic-bezier(.22,1,.36,1);
+}
+.entry:hover .title{transform:translateX(-.35rem)}
+
+/* ============================================================
+   INFO
+   ============================================================ */
+#info{padding:clamp(.5rem,1.5vh,1.25rem) 0}
+.statement{
+  font-family:var(--display);font-weight:200;
+  font-size:clamp(1.35rem,3.3vw,2.5rem);
+  line-height:1.22;letter-spacing:-.01em;max-width:22ch;margin:0 0 clamp(2.5rem,6vh,4.5rem);
+}
+.statement b{font-weight:400}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:start}
+.prose p{margin:0 0 1.1rem;max-width:46ch;font-size:.92rem}
+.prose p:last-child{margin-bottom:0}
+.ledger{width:100%;border-collapse:collapse;max-width:640px}
+.ledger tr{border-bottom:1px solid var(--line)}
+.ledger tr:first-child{border-top:1px solid var(--line)}
+.ledger th{
+  text-align:left;vertical-align:top;padding:.9rem 1.5rem .9rem 0;
+  font-family:var(--mono);font-weight:400;font-size:.64rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  white-space:nowrap;width:1%;
+}
+.ledger td{padding:.9rem 0;font-size:.85rem;line-height:1.55}
+
+/* ============================================================
+   CONTACTO
+   ============================================================ */
+#contacto{padding:clamp(3rem,11vh,8rem) 0 clamp(.5rem,1.5vh,1.25rem)}
+.mailto{
+  font-family:var(--display);font-weight:200;
+  font-size:clamp(1.5rem,5.6vw,3.9rem);
+  line-height:1.05;letter-spacing:-.02em;
+  display:inline-block;word-break:break-word;
+  border-bottom:1px solid var(--line);
+  transition:border-color .35s, letter-spacing .5s cubic-bezier(.22,1,.36,1);
+}
+.mailto:hover{border-color:var(--fg);letter-spacing:0}
+.elsewhere{display:flex;flex-wrap:wrap;gap:1.75rem;margin-top:2.5rem;font-size:.78rem;font-weight:700}
+.elsewhere a{color:var(--dim);transition:color .3s}
+.elsewhere a:hover{color:var(--fg)}
+.elsewhere a::after{content:" ↗";font-weight:400}
+.colofon{
+  border-top:1px solid var(--line);margin-top:clamp(3rem,8vh,6rem);padding:1.4rem 0 0;
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  font-family:var(--mono);font-size:.64rem;color:var(--dim);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (min-width:901px){
+  /* los datos van al pie del recuadro, no a media altura */
+  .rail .meta{
+    position:fixed;
+    left:calc(var(--borde) + var(--gutter));
+    bottom:calc(var(--borde) + var(--gutter));
+    margin-top:0;
+  }
+}
+
+@media (max-width:1000px){
+  .obra{grid-template-columns:1fr;gap:2.5rem}
+  .desc{height:auto;min-height:0;order:2}
+  .carro{order:1}
+  .ficha{position:static;display:block;opacity:0;height:0;overflow:hidden;transform:none}
+  .ficha .cuerpo{padding-top:0}
+  .ficha.on{height:auto;overflow:visible}
+}
+@media (max-width:900px){
+  :root{--banda:clamp(70px,11vh,110px)}
+  .shell{grid-template-columns:1fr;gap:2.5rem}
+  .rail{position:static}
+  .rail nav{flex-direction:row;flex-wrap:wrap;gap:1.25rem}
+  .rail .meta{margin-top:2rem}
+  .sheet,.cota,.cajetin{display:none}
+  .theme{position:static;writing-mode:horizontal-tb;transform:none;margin:2rem 0 0}
+  .lens,.peek{display:none}
+  .work{
+    height:auto;overflow:visible;
+    -webkit-mask-image:none;mask-image:none;
+    display:flex;flex-direction:column;gap:1.2rem;
+  }
+  .entry{opacity:1!important;transform:none!important;transform-origin:0 50%;padding:0;text-align:left}
+  .flecha,.pista{display:none}
+  .info-grid{grid-template-columns:1fr;gap:2.5rem}
+  html{scroll-snap-type:none;scroll-padding-top:0}
+  section{
+    min-height:auto;
+    scroll-snap-align:none;scroll-snap-stop:normal;
+    padding:2.5rem 0;
+  }
+  #inicio{min-height:auto;padding:2rem 0 4rem}
+}
+@media (pointer:coarse){.lens{display:none}}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="atmos" aria-hidden="true">
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+  <div class="glow glow-c"></div>
+  <div class="glow-cursor" id="glowCursor"></div>
+  <div class="lens" id="lens"><div class="lens-grid" id="lensGrid"></div></div>
+  <div class="grain"></div>
+</div>
+
+<!-- ============ BANDA DEL TÍTULO ============ -->
+<header class="banda">
+  <h1>Axel Estrada</h1>
+  <p>Desarrollador Full Stack</p>
+</header>
+
+<!-- ============ RECUADRO ============ -->
+<div class="sheet" aria-hidden="true">
+  <i class="c"></i><i class="v"></i><i class="c"></i><i class="v"></i>
+  <i class="c"></i><i class="v"></i><i class="c"></i><i class="v"></i>
+</div>
+<div class="cota cota-x" aria-hidden="true"><span id="cotaW">—</span></div>
+<div class="cota cota-y" aria-hidden="true"><span id="cotaH">—</span></div>
+
+<!-- cajetín: solo en el inicio -->
+<div class="cajetin" id="cajetin" aria-hidden="true">
+  <div class="head"><span>AXEL ESTRADA</span><b>01</b></div>
+  <div><span>LÁMINA</span><b>PORTFOLIO</b></div>
+  <div><span>ESCALA</span><b>1:1</b></div>
+  <div><span>REV.</span><b>2026</b></div>
+</div>
+
+<button class="theme" id="theme" aria-label="Cambiar entre tema claro y oscuro">
+  <span id="t-light" class="is-on">CLARO</span>
+  <span id="t-dark">OSCURO</span>
+</button>
+
+<div class="shell">
+
+  <aside class="rail">
+    <nav>
+      <a href="#inicio">Inicio</a>
+      <a href="#proyectos">Proyectos</a>
+      <a href="#info">Info</a>
+      <a href="#contacto">Contacto</a>
+      <!-- EDITAR: subí tu CV al repo como cv.pdf -->
+      <a href="cv.pdf" target="_blank" rel="noopener">CV ↗</a>
+    </nav>
+    <div class="meta">
+      Buenos Aires, AR<br>
+      GMT−3<br>
+      © 2026
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ---------- INICIO ---------- -->
+    <section id="inicio" aria-label="Inicio">
+      <a class="pista" href="#proyectos" aria-label="Ir a Proyectos">
+        <svg width="26" height="40" viewBox="0 0 26 40" aria-hidden="true">
+          <rect class="cuerpo" x="0.75" y="0.75" width="24.5" height="38.5" rx="12.25"/>
+          <rect class="rueda" x="12" y="8" width="2" height="7" rx="1"/>
+        </svg>
+        <svg width="22" height="12" viewBox="0 0 22 12" aria-hidden="true">
+          <polyline class="chevron" points="2,2 11,10 20,2"/>
+        </svg>
+      </a>
+    </section>
+
+    <!-- ---------- PROYECTOS ---------- -->
+    <section id="proyectos">
+      <p class="rotulo-sec">Proyectos</p>
+
+      <div class="obra">
+
+        <!-- descripción: cambia según el proyecto centrado -->
+        <div class="desc" id="desc">
+
+          <article class="ficha on" data-i="0">
+            <span class="num">01 / 06 — 2026</span>
+            <h3>Lexsa Vinilos</h3>
+            <!-- EDITAR: links reales -->
+            <div class="cuerpo"><p>E-commerce de vinilos con catálogo, carrito y checkout persistido en Firestore. Ruteo con React Router y credenciales fuera del repo con variables de entorno.</p>
+            <ul class="tags"><li>React 18</li><li>Firestore</li><li>Vite</li><li>React Router</li></ul>
+            <div class="links"><a href="https://lexsa-vinilos.vercel.app/" target="_blank" rel="noopener">Ver demo →</a><a href="https://github.com/Lexsa21/Proyecto-React" target="_blank" rel="noopener">Código →</a></div></div>
+          </article>
+
+          <article class="ficha" data-i="1">
+            <span class="num">02 / 06 — 2026</span>
+            <h3>UADE Beats</h3>
+            <div class="cuerpo"><p>Proyecto final de Paradigmas: aplicación de escritorio diseñada desde el diagrama UML, con jerarquía de clases, herencia y encapsulamiento, e interfaz en Swing.</p>
+            <ul class="tags"><li>Java</li><li>POO</li><li>UML</li><li>Swing</li></ul>
+            <div class="links"><a href="https://github.com/Lexsa21/UADE-Beats-POO" target="_blank" rel="noopener">Código →</a></div></div>
+          </article>
+
+          <article class="ficha" data-i="2">
+            <span class="num">03 / 06 — 2025</span>
+            <h3>LexsaGames</h3>
+            <div class="cuerpo"><p>Tienda de videojuegos sin frameworks: filtrado de catálogo, carrito y renderizado dinámico manipulando el DOM directamente.</p>
+            <ul class="tags"><li>JavaScript ES6</li><li>DOM</li><li>localStorage</li></ul>
+            <div class="links"><a href="https://lexsa21.github.io/Proyecto-JS/" target="_blank" rel="noopener">Ver demo →</a><a href="https://github.com/Lexsa21/Proyecto-JS" target="_blank" rel="noopener">Código →</a></div></div>
+          </article>
+
+          <article class="ficha" data-i="3">
+            <span class="num">04 / 06 — 2025</span>
+            <h3>Gestión de cine</h3>
+            <div class="cuerpo"><p>Sistema de salas y funciones con persistencia en JSON. Le sumé tests unitarios, docstrings y README, y saqué los precios hardcodeados.</p>
+            <ul class="tags"><li>Python</li><li>JSON</li><li>unittest</li></ul>
+            <div class="links"><a href="https://github.com/Lexsa21/Progra1" target="_blank" rel="noopener">Código →</a></div></div>
+          </article>
+
+          <article class="ficha" data-i="4">
+            <span class="num">05 / 06 — 2025</span>
+            <h3>Lexa Clothing</h3>
+            <div class="cuerpo"><p>E-commerce de indumentaria con arquitectura SCSS por parciales, HTML semántico y validación de formularios. Pasó por nueve rondas de revisión de código.</p>
+            <ul class="tags"><li>SCSS</li><li>HTML5</li><li>JavaScript</li></ul>
+            <div class="links"><a href="https://lexsa21.github.io/Lexa-Clothing/" target="_blank" rel="noopener">Ver demo →</a><a href="https://github.com/Lexsa21/Lexa-Clothing" target="_blank" rel="noopener">Código →</a></div></div>
+          </article>
+
+          <article class="ficha" data-i="5">
+            <span class="num">06 / 06 — 2024</span>
+            <h3>Kiddo</h3>
+            <div class="cuerpo"><p>Landing de una hamburguesería, mobile-first. Maquetado limpio con grilla, tipografía y tres breakpoints, sin librerías.</p>
+            <ul class="tags"><li>HTML5</li><li>CSS3</li><li>Grid / Flexbox</li></ul>
+            <div class="links"><a href="https://lexsa21.github.io/Proyecto-Kiddo/" target="_blank" rel="noopener">Ver demo →</a><a href="https://github.com/Lexsa21/Proyecto-Kiddo" target="_blank" rel="noopener">Código →</a></div></div>
+          </article>
+
+        </div>
+
+        <!-- carrusel -->
+        <div class="carro">
+          <div class="flecha flecha-up" aria-hidden="true">↑</div>
+          <div class="work" id="work" tabindex="0" aria-label="Listado de proyectos, se desplaza con la rueda">
+            <a class="entry" href="https://lexsa-vinilos.vercel.app/" target="_blank" rel="noopener"><span class="title">Lexsa Vinilos</span></a>
+            <a class="entry" href="https://github.com/Lexsa21/UADE-Beats-POO" target="_blank" rel="noopener"><span class="title">UADE Beats</span></a>
+            <a class="entry" href="https://lexsa21.github.io/Proyecto-JS/" target="_blank" rel="noopener"><span class="title">LexsaGames</span></a>
+            <a class="entry" href="https://github.com/Lexsa21/Progra1" target="_blank" rel="noopener"><span class="title">Gestión de cine</span></a>
+            <a class="entry" href="https://lexsa21.github.io/Lexa-Clothing/" target="_blank" rel="noopener"><span class="title">Lexa Clothing</span></a>
+            <a class="entry" href="https://lexsa21.github.io/Proyecto-Kiddo/" target="_blank" rel="noopener"><span class="title">Kiddo</span></a>
+          </div>
+          <div class="flecha flecha-dn" aria-hidden="true">↓</div>
+        </div>
+
+      </div>
+
+      <a class="pista" href="#info" aria-label="Ir a Info">
+        <svg width="26" height="40" viewBox="0 0 26 40" aria-hidden="true">
+          <rect class="cuerpo" x="0.75" y="0.75" width="24.5" height="38.5" rx="12.25"/>
+          <rect class="rueda" x="12" y="8" width="2" height="7" rx="1"/>
+        </svg>
+        <svg width="22" height="12" viewBox="0 0 22 12" aria-hidden="true">
+          <polyline class="chevron" points="2,2 11,10 20,2"/>
+        </svg>
+      </a>
+    </section>
+
+    <!-- ---------- INFO ---------- -->
+    <section id="info">
+      <p class="rotulo-sec">Info</p>
+      <p class="statement">Entrego, vuelvo, <b>refactorizo</b> y recién ahí lo doy por hecho.</p>
+
+      <div class="info-grid">
+        <div class="prose">
+          <p>Estoy en segundo año de Ingeniería en Sistemas en UADE. Todo lo que hay acá lo construí por fuera de la cursada, o llevando más lejos de lo que pedía la materia.</p>
+          <p>Antes de programar trabajé atendiendo clientes en un local de ropa. De ahí me quedó lo de resolver en el momento y hacerme cargo de un problema hasta que queda cerrado.</p>
+          <p>Busco mi primer puesto como trainee en desarrollo o QA, en un equipo donde haya alguien más experimentado revisándome el código.</p>
+        </div>
+
+        <table class="ledger">
+          <tr><th scope="row">Frontend</th><td>React, JavaScript, HTML, CSS/SCSS</td></tr>
+          <tr><th scope="row">Backend</th><td>Java, Python, Node.js</td></tr>
+          <tr><th scope="row">Datos</th><td>Firestore, SQL, JSON</td></tr>
+          <tr><th scope="row">Tooling</th><td>Git, GitHub, Vite, Figma</td></tr>
+          <tr><th scope="row">Fundamentos</th><td>POO, UML, estructuras de datos, testing unitario</td></tr>
+          <tr><th scope="row">Formación</th><td>Ing. en Sistemas, UADE — 2.º año, en curso</td></tr>
+          <tr><th scope="row">Idiomas</th><td>Español nativo · Inglés técnico</td></tr>
+        </table>
+      </div>
+
+      <a class="pista" href="#contacto" aria-label="Ir a Contacto">
+        <svg width="26" height="40" viewBox="0 0 26 40" aria-hidden="true">
+          <rect class="cuerpo" x="0.75" y="0.75" width="24.5" height="38.5" rx="12.25"/>
+          <rect class="rueda" x="12" y="8" width="2" height="7" rx="1"/>
+        </svg>
+        <svg width="22" height="12" viewBox="0 0 22 12" aria-hidden="true">
+          <polyline class="chevron" points="2,2 11,10 20,2"/>
+        </svg>
+      </a>
+    </section>
+
+    <!-- ---------- CONTACTO ---------- -->
+    <section id="contacto">
+      <p class="rotulo-sec">Contacto</p>
+      <!-- EDITAR: tu mail real, en el href y en el texto -->
+      <a class="mailto" href="mailto:axelestradaa.098@gmail.com">axelestradaa.098@gmail.com</a>
+
+      <div class="elsewhere">
+        <a href="https://github.com/Lexsa21" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/axeelestrada" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="cv.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+      </div>
+
+      <div class="colofon">
+        <span>Axel Estrada — 2026</span>
+        <span>HTML y CSS a mano. Sin frameworks.</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* ---- INTRO: el nombre arranca centrado y grande, y viaja a la banda ----
+   El texto se AGRANDA de verdad (font-size) y se reduce con scale hasta su
+   tamaño final. Al revés — dibujarlo chico y magnificarlo — el navegador
+   estira la imagen ya rasterizada y se ve pixelado. */
+(function(){
+  const raiz = document.documentElement;
+  if (!raiz.classList.contains('intro')) return;
+  const h1 = document.querySelector('.banda h1');
+  if (!h1){ raiz.classList.remove('intro'); return; }
+
+  let listo = false, arrancado = false, escala = 1, tx = 0, ty = 0;
+  const SS = 1.6;   // sobremuestreo: se dibuja 1.6× más grande de lo que se ve
+
+  function terminar(){
+    if (listo) return;
+    listo = true;
+    if (!arrancado){ raiz.classList.remove('intro'); return; }
+
+    h1.style.transition = 'transform 1.15s cubic-bezier(.65,0,.2,1)';
+    h1.style.transform  = 'translate(' + tx + 'px,' + ty + 'px) scale(' + (1/(escala*SS)) + ')';
+    raiz.classList.remove('intro');
+
+    // al llegar, se devuelve el tamaño real y se quita el transform:
+    // el resultado visual es idéntico, pero el texto vuelve a ser nítido
+    setTimeout(() => {
+      h1.style.transition = 'none';
+      h1.style.fontSize = '';
+      h1.style.transform = '';
+      void h1.offsetWidth;
+      h1.style.transition = '';
+      h1.style.willChange = '';
+    }, 1160);
+  }
+
+  function arrancar(){
+    const chico = h1.getBoundingClientRect();                       // tamaño final
+    const fs = parseFloat(getComputedStyle(h1).fontSize);
+    escala = Math.min(2.6, (innerWidth * 0.42) / chico.width);
+
+    h1.style.transition = 'none';
+    h1.style.fontSize = (fs * escala * SS) + 'px';                  // se dibuja aún más grande
+    const grande = h1.getBoundingClientRect();
+
+    // desplazamiento que lo devuelve a su lugar (centros, porque el origen es el centro)
+    tx = (chico.left  + chico.width  / 2) - (grande.left + grande.width  / 2);
+    ty = (chico.top   + chico.height / 2) - (grande.top  + grande.height / 2);
+
+    // arranque: centrado en pantalla y reducido a la medida visible de la intro
+    h1.style.transform = 'translate(' +
+      (innerWidth  / 2 - (grande.left + grande.width  / 2)) + 'px,' +
+      (innerHeight / 2 - (grande.top  + grande.height / 2)) + 'px) scale(' + (1/SS) + ')';
+    void h1.offsetWidth;
+
+    arrancado = true;
+    setTimeout(terminar, 900);        // cuánto se queda quieto en el centro
+  }
+
+  ['click','wheel','keydown','touchstart'].forEach(ev =>
+    addEventListener(ev, terminar, { once:true, passive:true }));
+
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(arrancar);
+  else arrancar();
+})();
+
+/* ---- carrusel: centra el proyecto y sincroniza la descripción ---- */
+(function(){
+  const box = document.getElementById('work');
+  const desc = document.getElementById('desc');
+  if (!box) return;
+  const items  = Array.prototype.slice.call(box.querySelectorAll('.entry'));
+  const fichas = desc ? Array.prototype.slice.call(desc.querySelectorAll('.ficha')) : [];
+  if (!items.length) return;
+
+  const chico = () => window.matchMedia('(max-width:900px)').matches;
+  let raf = null, activo = -1;
+
+  /* Dónde se para el proyecto activo dentro de su caja.
+     0.5 = centro · 0.32 = tercio superior · 0.21 = bien arriba */
+  const FOCO = 0.21;
+  const foco = () => box.clientHeight * FOCO;
+
+  function relleno(){
+    if (chico()){ box.style.paddingTop = box.style.paddingBottom = ''; return; }
+    const H = box.clientHeight, ih = items[0].offsetHeight;
+    box.style.paddingTop    = Math.max(0, foco() - ih / 2) + 'px';
+    box.style.paddingBottom = Math.max(0, H - foco() - ih / 2) + 'px';
+  }
+
+  /* --- alinea el TÍTULO de la ficha con el centro real del carrusel.
+         Mide las dos posiciones en pantalla y corrige la diferencia,
+         así no importa si las columnas miden distinto. --- */
+  const caja = document.getElementById('desc');
+  function alinear(){
+    if (!caja || chico()){ fichas.forEach(f => f.style.top = ''); return; }
+    const rBox  = box.getBoundingClientRect();
+    const rCaja = caja.getBoundingClientRect();
+    const objetivo = (rBox.top + foco()) - rCaja.top;  // punto focal del carrusel
+    fichas.forEach(f => {
+      const t = f.querySelector('h3');
+      if (!t) return;
+      const rt = t.getBoundingClientRect();
+      // las fichas inactivas están corridas 10px por la animación de entrada
+      const anim = f.classList.contains('on') ? 0 : 10;
+      const actual = (rt.top + rt.height / 2) - rCaja.top - anim;
+      const yaTiene = parseFloat(f.style.top) || 0;
+      f.style.top = (yaTiene + (objetivo - actual)) + 'px';
+    });
+  }
+
+  function pintar(){
+    raf = null;
+    if (chico()){
+      items.forEach(el => { el.style.opacity = ''; el.style.transform = ''; });
+      fichas.forEach((f,i) => f.classList.toggle('on', i === Math.max(0,activo)));
+      return;
+    }
+    const r = box.getBoundingClientRect();
+    const centro = r.top + foco();
+    let mejor = 0, min = Infinity;
+
+    items.forEach((el,i) => {
+      const b = el.getBoundingClientRect();
+      const dist = Math.abs((b.top + b.height / 2) - centro);
+      const d = Math.min(1, dist / (r.height * 0.5));
+      el.style.opacity   = (1 - d * 0.74).toFixed(3);
+      el.style.transform = 'scale(' + (1 - d * 0.13).toFixed(3) + ')';
+      if (dist < min){ min = dist; mejor = i; }
+    });
+
+    if (mejor !== activo){
+      activo = mejor;
+      fichas.forEach((f,i) => f.classList.toggle('on', i === activo));
+    }
+  }
+  function pedir(){ if (!raf) raf = requestAnimationFrame(pintar); }
+
+  /* --- la rueda avanza de a UN proyecto por gesto --- */
+  function irA(i){
+    const el = items[i];
+    box.scrollTo({
+      top: el.offsetTop - (foco() - el.offsetHeight / 2),
+      behavior: 'smooth'
+    });
+  }
+
+  let trabado = false;
+  box.addEventListener('wheel', e => {
+    if (chico()) return;
+    const dir = e.deltaY > 0 ? 1 : -1;
+    const sig = activo + dir;
+    // en los extremos no interceptamos: el scroll sigue hacia la página
+    if (sig < 0 || sig >= items.length) return;
+    e.preventDefault();
+    if (trabado) return;
+    trabado = true;
+    activo = sig;
+    fichas.forEach((f,i) => f.classList.toggle('on', i === activo));
+    irA(sig);
+    setTimeout(() => { trabado = false; }, 340);
+  }, { passive:false });
+
+  box.addEventListener('scroll', pedir, { passive:true });
+  addEventListener('resize', () => { relleno(); alinear(); pedir(); }, { passive:true });
+  relleno(); alinear(); pintar();
+  // las tipografías cambian las alturas al terminar de cargar
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { relleno(); alinear(); pedir(); });
+  // último repaso cuando el layout ya se asentó
+  setTimeout(() => { relleno(); alinear(); pedir(); }, 500);
+})();
+
+/* ---- marca la lámina que está a la vista (para la pista) ---- */
+(function(){
+  const secs = document.querySelectorAll('section[id]');
+  if (!secs.length) return;
+  const obs = new IntersectionObserver(es => {
+    es.forEach(e => e.target.classList.toggle('activa', e.intersectionRatio > 0.75));
+  }, { threshold:[0,.4,.75,.9,1] });
+  secs.forEach(s => obs.observe(s));
+})();
+
+/* ---- el cajetín solo vive en el inicio ---- */
+(function(){
+  const caj = document.getElementById('cajetin');
+  const ini = document.getElementById('inicio');
+  if (!caj || !ini) return;
+  const obs = new IntersectionObserver(es => {
+    es.forEach(e => caj.classList.toggle('on', e.isIntersecting && e.intersectionRatio > .75));
+  }, { threshold:[0,.5,.7,.75,.8,.9,1] });
+  obs.observe(ini);
+})();
+
+/* ---- cotas vivas ---- */
+(function(){
+  const w = document.getElementById('cotaW'), h = document.getElementById('cotaH');
+  if (!w || !h) return;
+  function medir(){ w.textContent = innerWidth + ' PX'; h.textContent = innerHeight + ' PX'; }
+  addEventListener('resize', medir, { passive:true });
+  medir();
+})();
+
+/* ---- halo + lente ---- */
+(function(){
+  const halo = document.getElementById('glowCursor');
+  const lens = document.getElementById('lens');
+  const grid = document.getElementById('lensGrid');
+  if (!halo) return;
+  if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  if (!window.matchMedia('(pointer:fine)').matches) return;
+
+  let tx = innerWidth * .7, ty = innerHeight * .35, gx = tx, gy = ty, running = false;
+  let s = 1, ts = 1;
+  let R = lens ? lens.offsetWidth / 2 : 0;
+  addEventListener('resize', () => { if (lens) R = lens.offsetWidth / 2; }, { passive:true });
+
+  document.querySelectorAll('.entry, .mailto, .rail nav a, .ficha .links a').forEach(el => {
+    el.addEventListener('mouseenter', () => { ts = 1.28; lens && lens.classList.add('hot'); });
+    el.addEventListener('mouseleave', () => { ts = 1;    lens && lens.classList.remove('hot'); });
+  });
+
+  function paint(){
+    halo.style.transform = 'translate3d(' + gx + 'px,' + gy + 'px,0) scale(' + s + ')';
+    if (lens){
+      lens.style.transform = 'translate3d(' + gx + 'px,' + gy + 'px,0)';
+      grid.style.transform = 'translate3d(' + (R - gx) + 'px,' + (R - gy) + 'px,0)';
+    }
+  }
+  function loop(){
+    const dx = tx - gx, dy = ty - gy, ds = ts - s;
+    if (Math.abs(dx) < .4 && Math.abs(dy) < .4 && Math.abs(ds) < .002){ running = false; return; }
+    gx += dx * 0.14; gy += dy * 0.14; s += ds * 0.09;
+    paint();
+    requestAnimationFrame(loop);
+  }
+  addEventListener('mousemove', e => {
+    tx = e.clientX; ty = e.clientY;
+    halo.classList.add('live');
+    lens && lens.classList.add('live');
+    if (!running){ running = true; requestAnimationFrame(loop); }
+  }, { passive:true });
+  paint();
+})();
+
+/* ---- tema claro / oscuro ---- */
+(function(){
+  const btn = document.getElementById('theme');
+  const L = document.getElementById('t-light'), D = document.getElementById('t-dark');
+  btn.addEventListener('click', () => {
+    const now = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = now;
+    L.classList.toggle('is-on', now === 'light');
+    D.classList.toggle('is-on', now === 'dark');
+  });
+})();
+
+/* ---- sección activa en el nav ---- */
+(function(){
+  const links = document.querySelectorAll('.rail nav a[href^="#"]');
+  const map = {};
+  links.forEach(a => map[a.getAttribute('href').slice(1)] = a);
+  const obs = new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting){
+        links.forEach(a => a.classList.remove('on'));
+        map[e.target.id] && map[e.target.id].classList.add('on');
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => obs.observe(s));
+})();
+</script>
+
+</body>
+</html>

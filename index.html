@@ -513,12 +513,13 @@ section.activa .pista:hover{opacity:.95}
   /* la banda deja de ser fija: scrollea con el contenido y no lo tapa */
   .banda{
     position:static;
+    left:auto;right:auto;
     height:auto;
-    padding:1.5rem 0 .25rem;
+    padding:2rem var(--gutter) .5rem;
     align-items:flex-start;
   }
   .banda h1{font-size:clamp(1.9rem,9vw,2.6rem)}
-  .banda p{margin:.4rem 0 0}
+  .banda p{margin:.4rem .1rem 0 0}
 
   .sheet,.cota,.cajetin,.lens,.peek,.flecha,.pista{display:none}
 
@@ -534,18 +535,27 @@ section.activa .pista:hover{opacity:.95}
   /* el conmutador de tema va al final, no flotando arriba */
   .theme{
     position:static;writing-mode:horizontal-tb;transform:none;
-    margin:2.5rem 0 0;
+    left:auto;bottom:auto;
+    margin:0 0 3rem var(--gutter);
   }
 
   html{scroll-snap-type:none;scroll-padding-top:0}
   section{
     min-height:auto;
     scroll-snap-align:none;scroll-snap-stop:normal;
-    padding:2.5rem 0;
+    padding:1.5rem 0 2.5rem!important;
+  }
+
+  /* rótulos de sección más presentes: son el punto de llegada del nav */
+  .rotulo-sec{
+    font-size:.8rem;letter-spacing:.28em;font-weight:500;
+    color:var(--fg);
+    padding-bottom:.7rem;margin-bottom:1.6rem;
+    border-bottom:1px solid var(--line);
   }
 
   /* el inicio ocupa lo que queda de pantalla, sin asomar la sección siguiente */
-  #inicio{min-height:70vh;padding:1rem 0 3rem}
+  #inicio{min-height:0;padding:.5rem 0 2.5rem}
 
   /* ---- proyectos: cada uno con su descripción, no un carrusel ---- */
   .carro{display:none}                 /* la lista de títulos es redundante acá */
@@ -607,11 +617,6 @@ section.activa .pista:hover{opacity:.95}
   <div><span>ESCALA</span><b>1:1</b></div>
   <div><span>REV.</span><b>2026</b></div>
 </div>
-
-<button class="theme" id="theme" aria-label="Cambiar entre tema claro y oscuro">
-  <span id="t-light" class="is-on">CLARO</span>
-  <span id="t-dark">OSCURO</span>
-</button>
 
 <div class="shell">
 
@@ -787,6 +792,11 @@ section.activa .pista:hover{opacity:.95}
 
   </main>
 </div>
+
+<button class="theme" id="theme" aria-label="Cambiar entre tema claro y oscuro">
+  <span id="t-light" class="is-on">CLARO</span>
+  <span id="t-dark">OSCURO</span>
+</button>
 
 <script>
 /* ---- INTRO: el nombre arranca centrado y grande, y viaja a la banda ----

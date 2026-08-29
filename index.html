@@ -464,6 +464,7 @@ section.activa .pista:hover{opacity:.95}
 #contacto{padding:clamp(3rem,11vh,8rem) 0 clamp(.5rem,1.5vh,1.25rem)}
 .mailto{
   font-family:var(--display);font-weight:200;
+  overflow-wrap:anywhere;
   font-size:clamp(1.5rem,5.6vw,3.9rem);
   line-height:1.05;letter-spacing:-.02em;
   display:inline-block;word-break:break-word;
@@ -503,29 +504,69 @@ section.activa .pista:hover{opacity:.95}
   .ficha.on{height:auto;overflow:visible}
 }
 @media (max-width:900px){
-  :root{--banda:clamp(70px,11vh,110px)}
-  .shell{grid-template-columns:1fr;gap:2.5rem}
-  .rail{position:static}
-  .rail nav{flex-direction:row;flex-wrap:wrap;gap:1.25rem}
-  .rail .meta{margin-top:2rem}
-  .sheet,.cota,.cajetin{display:none}
-  .theme{position:static;writing-mode:horizontal-tb;transform:none;margin:2rem 0 0}
-  .lens,.peek{display:none}
-  .work{
-    height:auto;overflow:visible;
-    -webkit-mask-image:none;mask-image:none;
-    display:flex;flex-direction:column;gap:1.2rem;
+  :root{
+    --borde:0px;
+    --gutter:1.35rem;          /* menos margen lateral */
+    --banda:auto;
   }
-  .entry{opacity:1!important;transform:none!important;transform-origin:0 50%;padding:0;text-align:left}
-  .flecha,.pista{display:none}
-  .info-grid{grid-template-columns:1fr;gap:2.5rem}
+
+  /* la banda deja de ser fija: scrollea con el contenido y no lo tapa */
+  .banda{
+    position:static;
+    height:auto;
+    padding:1.5rem 0 .25rem;
+    align-items:flex-start;
+  }
+  .banda h1{font-size:clamp(1.9rem,9vw,2.6rem)}
+  .banda p{margin:.4rem 0 0}
+
+  .sheet,.cota,.cajetin,.lens,.peek,.flecha,.pista{display:none}
+
+  .shell{
+    grid-template-columns:1fr;
+    gap:2rem;
+    padding:0 var(--gutter) 3rem;
+  }
+  .rail{position:static}
+  .rail nav{flex-direction:row;flex-wrap:wrap;gap:1.1rem}
+  .rail .meta{margin-top:1.5rem}
+
+  /* el conmutador de tema va al final, no flotando arriba */
+  .theme{
+    position:static;writing-mode:horizontal-tb;transform:none;
+    margin:2.5rem 0 0;
+  }
+
   html{scroll-snap-type:none;scroll-padding-top:0}
   section{
     min-height:auto;
     scroll-snap-align:none;scroll-snap-stop:normal;
     padding:2.5rem 0;
   }
-  #inicio{min-height:auto;padding:2rem 0 4rem}
+
+  /* el inicio ocupa lo que queda de pantalla, sin asomar la sección siguiente */
+  #inicio{min-height:70vh;padding:1rem 0 3rem}
+
+  /* ---- proyectos: cada uno con su descripción, no un carrusel ---- */
+  .carro{display:none}                 /* la lista de títulos es redundante acá */
+  .obra{display:block}
+  .desc{position:static;height:auto}
+
+  .ficha{
+    position:static;display:block;
+    opacity:1!important;height:auto;overflow:visible;
+    transform:none!important;
+    padding:1.75rem 0;
+    border-top:1px solid var(--line);
+  }
+  .ficha:first-of-type{border-top:0;padding-top:.5rem}
+  .ficha h3{font-size:1.45rem;margin:.15rem 0 .8rem}
+  .ficha .cuerpo{padding-top:0}
+  .ficha p{max-width:none}
+
+  .info-grid{grid-template-columns:1fr;gap:2.5rem}
+  .statement{max-width:none}
+  .mailto{font-size:clamp(1.15rem,5.6vw,1.9rem)}
 }
 @media (pointer:coarse){.lens{display:none}}
 @media (prefers-reduced-motion:reduce){
